@@ -58,7 +58,9 @@ public class ClienteService {
 	}
 
 	public void deleteClient(Long id) {
-		clienteRepository.deleteById(id);
-
+	    if (!clienteRepository.existsById(id)) {
+	        throw new RuntimeException("Cliente não encontrado para deletar");
+	    }
+	    clienteRepository.deleteById(id);
 	}
 }
