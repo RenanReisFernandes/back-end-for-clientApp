@@ -19,7 +19,7 @@ public class ClienteService {
 	private final ClienteRepository clienteRepository;
 
 	public Client createClient(Client cliente) {
-		Optional<Client> clienteEncontrado = clienteRepository.findById(cliente.getId());
+		Optional<Client> clienteEncontrado = clienteRepository.findByCpf(cliente.getCpf());
 		if (clienteEncontrado.isPresent()) {
 			System.out.println("Cliente já cadastrado!");
 			return clienteEncontrado.get();
@@ -43,7 +43,7 @@ public class ClienteService {
 		Optional<Client> clienteEncontrado = clienteRepository.findById(id);
 		if (clienteEncontrado.isEmpty()) {
 			System.out.println("Cliente não encontrado!");
-			return Optional.of(clienteEncontrado.get());
+			return Optional.empty();
 		} else {
 			Client clienteAtualizado = clienteEncontrado.get();
 			clienteAtualizado.setNome(cliente.getNome());
@@ -58,7 +58,9 @@ public class ClienteService {
 	}
 
 	public void deleteClient(Long id) {
-		clienteRepository.deleteById(id);
-
+	    if (!clienteRepository.existsById(id)) {
+	        throw new RuntimeException("Cliente não encontrado para deletar");
+	    }
+	    clienteRepository.deleteById(id);
 	}
 }
