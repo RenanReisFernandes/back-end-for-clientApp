@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.renan.clientApp.Mapper.ClientMapper;
+import com.renan.clientApp.Request.ClientRequest;
+import com.renan.clientApp.Response.ClientResponse;
 import com.renan.clientApp.entities.Client;
 import com.renan.clientApp.services.ClienteService;
 
@@ -29,37 +32,43 @@ public class ClienteController {
 	private final ClienteService clienteService;
 	
 	@PostMapping
-	public ResponseEntity<Client> salvar(@RequestBody Client cliente){
-		Client clienteCriado = clienteService.createClient(cliente);
-		return ResponseEntity.status(HttpStatus.CREATED).body(clienteCriado);
+	public ResponseEntity<ClientResponse> salvar(@RequestBody ClientRequest clienteRequest){
+		Client clienteCriado = ClientMapper.toClient(clienteRequest);
+		Client clienteSalvo = clienteService.createClient(clienteCriado);
+		ClientResponse clienteConvertido = ClientMapper.toClientResponse(clienteSalvo);
+		return ResponseEntity.status(HttpStatus.CREATED).body(clienteConvertido);
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<Client>> listarTodos(){
+	public ResponseEntity<List<ClientResponse>> listarTodos(){
 		List<Client> list = clienteService.findAllClients();
-		return ResponseEntity.ok(list);
+		List<ClientResponse> clientResponse = ClientMapper.toClientresponseList(list);
+		return ResponseEntity.status(HttpStatus.OK).body(clientResponse);
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Client> buscarPorId(@PathVariable("id") Long id) {
+	public ResponseEntity<ClientResponse> buscarPorId(@PathVariable("id") Long id) {
 	    Optional<Client> optionalCliente = clienteService.findClientById(id);
 
 	    if (optionalCliente.isEmpty()) {
 	    	return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	        
 	    } else {
-	    	return ResponseEntity.ok(optionalCliente.get());
+	    	return ResponseEntity.status(HttpStatus.OK).body(ClientMapper.toClientResponse(optionalCliente.get()));
 	    }
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Client> updateClient(@PathVariable("id") Long id, @RequestBody Client cliente){
-	    Optional<Client> clienteAtualizado = clienteService.updateClient(cliente, id);
+	public ResponseEntity<ClientResponse> updateClient(@PathVariable("id") Long id, @RequestBody ClientRequest clienteRequest){
+		Client clienteConvertido = ClientMapper.toClient(clienteRequest);
+	    Optional<Client> clienteAtualizado = clienteService.updateClient(clienteConvertido, id);
 	    if (clienteAtualizado.isEmpty()) {
 	        System.out.println("Cliente não encontrado");
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	    } else {
-	        return ResponseEntity.ok(clienteAtualizado.get());
+	    	
+	        ClientResponse response = ClientMapper.toClientResponse(clienteAtualizado.get());
+	        return ResponseEntity.ok(response);
 	    }
 	}
 	
