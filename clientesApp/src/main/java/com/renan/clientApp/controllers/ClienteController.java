@@ -21,6 +21,7 @@ import com.renan.clientApp.Response.ClientResponse;
 import com.renan.clientApp.entities.Client;
 import com.renan.clientApp.services.ClienteService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -33,7 +34,7 @@ public class ClienteController {
 	private final ClientMapper mapper;
 	
 	@PostMapping
-	public ResponseEntity<ClientResponse> salvar(@RequestBody ClientRequest clienteRequest){
+	public ResponseEntity<ClientResponse> salvar(@Valid @RequestBody ClientRequest clienteRequest){
 		Client clienteCriado = mapper.toClient(clienteRequest);
 		Client clienteSalvo = clienteService.createClient(clienteCriado);
 		ClientResponse clienteConvertido = mapper.toClientResponse(clienteSalvo);
@@ -60,7 +61,7 @@ public class ClienteController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<ClientResponse> updateClient(@PathVariable("id") Long id, @RequestBody ClientRequest clienteRequest){
+	public ResponseEntity<ClientResponse> updateClient(@PathVariable("id") Long id,@Valid @RequestBody ClientRequest clienteRequest){
 		Client clienteConvertido = mapper.toClient(clienteRequest);
 	    Optional<Client> clienteAtualizado = clienteService.updateClient(clienteConvertido, id);
 	    if (clienteAtualizado.isEmpty()) {
