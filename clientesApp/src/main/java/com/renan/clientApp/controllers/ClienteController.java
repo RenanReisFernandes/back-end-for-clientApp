@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.renan.clientApp.Mapper.ClientMapper;
 import com.renan.clientApp.Request.ClientRequest;
 import com.renan.clientApp.Response.ClientResponse;
+import com.renan.clientApp.config.ClienteControllerDocs;
 import com.renan.clientApp.entities.Client;
 import com.renan.clientApp.services.ClienteService;
 
@@ -28,17 +29,16 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/cliente")
 @CrossOrigin("*")
 @RequiredArgsConstructor
-public class ClienteController {
+public class ClienteController implements ClienteControllerDocs  {
 	
 	private final ClienteService clienteService;
 	private final ClientMapper mapper;
 	
 	@PostMapping
-	public ResponseEntity<ClientResponse> salvar(@Valid @RequestBody ClientRequest clienteRequest){
+	public ResponseEntity<ClientResponse> salvar(@Valid @RequestBody ClientRequest clienteRequest) {
 		Client clienteCriado = mapper.toClient(clienteRequest);
 		Client clienteSalvo = clienteService.createClient(clienteCriado);
-		ClientResponse clienteConvertido = mapper.toClientResponse(clienteSalvo);
-		return ResponseEntity.status(HttpStatus.CREATED).body(clienteConvertido);
+		return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toClientResponse(clienteSalvo));
 	}
 	
 	@GetMapping
