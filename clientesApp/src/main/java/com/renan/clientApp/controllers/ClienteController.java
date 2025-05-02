@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.renan.clientApp.Mapper.ClientMapper;
 import com.renan.clientApp.Request.ClientRequest;
 import com.renan.clientApp.Response.ClientResponse;
+import com.renan.clientApp.config.ClienteControllerDocs;
 import com.renan.clientApp.entities.Client;
 import com.renan.clientApp.services.ClienteService;
 
@@ -28,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/cliente")
 @CrossOrigin("*")
 @RequiredArgsConstructor
-public class ClienteController {
+public class ClienteController implements ClienteControllerDocs  {
 	
 	private final ClienteService clienteService;
 	private final ClientMapper mapper;
