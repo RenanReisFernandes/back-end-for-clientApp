@@ -13,6 +13,7 @@ Bem-vindo ao **ClientApp**, uma aplicação backend desenvolvida em Java com Spr
 - **H2 Database**: Banco de dados em memória para desenvolvimento e testes.
 - **Lombok**: Para reduzir o boilerplate de código.
 - **Flyway**: Para controle de versão do banco de dados (desativado por padrão).
+- **Swagger**: Para documentação interativa da API.
 
 ---
 
@@ -38,8 +39,8 @@ clientesApp/
 │   │   │   ├── services/          # Regras de negócio
 │   │   │   ├── Request/           # DTOs de entrada
 │   │   │   ├── Response/          # DTOs de saída
-│   │   │   └──  # Classe principal
+│   │   │   └── ClientAppApplication.java # Classe principal
 │   │   └── resources/
-│   │       └──  # Configurações da aplicação
-├──                         # Gerenciamento de dependências Maven
+│   │       └── application.properties # Configurações da aplicação
+├── pom.xml                        # Gerenciamento de dependências Maven
 └── README.md                      # Documentação do projeto
