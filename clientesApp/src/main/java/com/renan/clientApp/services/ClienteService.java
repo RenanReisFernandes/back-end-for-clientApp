@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.renan.clientApp.entities.Client;
+import com.renan.clientApp.exceptions.NotFoundException;
 import com.renan.clientApp.repositories.ClienteRepository;
 
 import jakarta.transaction.Transactional;
@@ -19,15 +20,15 @@ public class ClienteService {
 	private final ClienteRepository clienteRepository;
 
 	public Client createClient(Client cliente) {
-		Optional<Client> clienteEncontrado = clienteRepository.findByCpf(cliente.getCpf());
-		if (clienteEncontrado.isPresent()) {
-			System.out.println("Cliente já cadastrado!");
-			return clienteEncontrado.get();
-		} else {
-			return clienteRepository.save(cliente);
-		}
-	}
+	    Optional<Client> clienteExistente = clienteRepository.findByCpf(cliente.getCpf());
 
+	    if (clienteExistente.isPresent()) {
+	        throw new RuntimeException("Já existe um cliente com o CPF: " + cliente.getCpf());
+	    }
+
+	    return clienteRepository.save(cliente);
+	}
+	
 	public Optional<Client> findClientById(Long id) {
 		return clienteRepository.findById(id);
 
@@ -40,27 +41,22 @@ public class ClienteService {
 
 	public Optional<Client> updateClient(Client cliente, Long id) {
 
-		Optional<Client> clienteEncontrado = clienteRepository.findById(id);
-		if (clienteEncontrado.isEmpty()) {
-			System.out.println("Cliente não encontrado!");
-			return Optional.empty();
-		} else {
-			Client clienteAtualizado = clienteEncontrado.get();
-			clienteAtualizado.setNome(cliente.getNome());
-			clienteAtualizado.setEndereco(cliente.getEndereco());
-			clienteAtualizado.setTelefone(cliente.getTelefone());
-			clienteAtualizado.setCpf(cliente.getCpf());
+		Client clienteEncontrado = clienteRepository.findById(id)
+				.orElseThrow(() -> new NotFoundException("Cliente com ID " + id + " não encontrado"));
 
-			Client clienteConcluido = clienteRepository.save(clienteAtualizado);
-			return Optional.of(clienteConcluido);
-		}
+		clienteEncontrado.setNome(cliente.getNome());
+		clienteEncontrado.setEndereco(cliente.getEndereco());
+		clienteEncontrado.setTelefone(cliente.getTelefone());
+		clienteEncontrado.setCpf(cliente.getCpf());
+
+		return Optional.of(clienteRepository.save(clienteEncontrado));
 
 	}
 
 	public void deleteClient(Long id) {
-	    if (!clienteRepository.existsById(id)) {
-	        throw new RuntimeException("Cliente não encontrado para deletar");
-	    }
-	    clienteRepository.deleteById(id);
+		if (!clienteRepository.existsById(id)) {
+			throw new RuntimeException("Cliente não encontrado para deletar");
+		}
+		clienteRepository.deleteById(id);
 	}
 }

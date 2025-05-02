@@ -35,11 +35,10 @@ public class ClienteController implements ClienteControllerDocs  {
 	private final ClientMapper mapper;
 	
 	@PostMapping
-	public ResponseEntity<ClientResponse> salvar(@Valid @RequestBody ClientRequest clienteRequest){
+	public ResponseEntity<ClientResponse> salvar(@Valid @RequestBody ClientRequest clienteRequest) {
 		Client clienteCriado = mapper.toClient(clienteRequest);
 		Client clienteSalvo = clienteService.createClient(clienteCriado);
-		ClientResponse clienteConvertido = mapper.toClientResponse(clienteSalvo);
-		return ResponseEntity.status(HttpStatus.CREATED).body(clienteConvertido);
+		return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toClientResponse(clienteSalvo));
 	}
 	
 	@GetMapping
