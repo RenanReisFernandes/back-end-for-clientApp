@@ -2,6 +2,7 @@ package com.renan.clientApp.services;
 
 import java.util.List;
 
+
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,10 +12,14 @@ import org.springframework.stereotype.Service;
 import com.renan.clientApp.entities.Usuario;
 import com.renan.clientApp.repositories.UsuarioRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class UsuarioService implements UserDetailsService {
 	
-	private UsuarioRepository usuarioRepository;
+	
+	private final UsuarioRepository usuarioRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
